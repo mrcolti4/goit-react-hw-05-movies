@@ -7,18 +7,25 @@ import { useParams } from 'react-router-dom';
 import styled from './Cast.module.css';
 import { FadeIn } from 'components/FadeIn/FadeIn';
 import { useFadeIn } from 'js/useFadeIn/useFadeIn';
+import { useEffect } from 'react';
 
 const Cast = () => {
   const { movieId } = useParams();
   const url = `https://api.themoviedb.org/3/movie/${movieId}/credits`;
 
   const isVisible = useFadeIn();
-  const { cast, crew } = useData(getMovieDetail, url);
+  const { data, isFetching, error, getData } = useData();
+
+  const { cast, crew } = data ?? {};
+
+  useEffect(() => {
+    getData(getMovieDetail(url));
+  }, [getData, url]);
 
   return (
-    <FadeIn isVisible={isVisible}>
+    <FadeIn data={cast}>
       <ul className={clsx(styled.cast)}>
-        <Loader isHidden={!isVisible} />
+        {isFetching && <Loader />}
         {cast &&
           cast.map(({ id, profile_path, original_name, character }) => {
             return (

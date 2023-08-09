@@ -1,11 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useCallback, useState } from 'react';
 
 export const useData = () => {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [isFetching, setIsFecthing] = useState(false);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
 
   const getData = useCallback(async requestFunction => {
     setIsFecthing(true);

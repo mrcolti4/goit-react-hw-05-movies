@@ -1,12 +1,12 @@
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { getMoviesByQuery } from 'js/API_requests/getMoviesByQuery';
 import { searchParamKey } from 'js/consts';
 import { useData } from 'js/useData/useData';
 import { useEffect } from 'react';
+import MovieList from 'components/MovieList/MovieList';
 
 const MoviesPage = () => {
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const search = searchParams.get(searchParamKey);
   const { data, isFetching, error, getData } = useData();
@@ -30,15 +30,7 @@ const MoviesPage = () => {
         <input type="text" defaultValue={search || ''} />
         <button type="submit">Search</button>
       </form>
-      <ul>
-        {moviesList.map(({ title, name, id }) => (
-          <li key={id}>
-            <Link to={`/movies/${id}`} state={{ from: location }}>
-              {title ?? name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+      <MovieList movies={moviesList} isFetching={isFetching} />
     </>
   );
 };

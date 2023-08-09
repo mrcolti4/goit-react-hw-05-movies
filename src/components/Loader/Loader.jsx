@@ -1,6 +1,6 @@
 import { Watch } from 'react-loader-spinner';
 
-const Loader = ({ isHidden }) => {
+const Loader = () => {
   return (
     <div>
       <Watch
@@ -11,7 +11,7 @@ const Loader = ({ isHidden }) => {
         ariaLabel="watch-loading"
         wrapperStyle={{}}
         wrapperClassName=""
-        visible={isHidden}
+        visible={true}
       />
     </div>
   );

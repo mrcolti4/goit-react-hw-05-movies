@@ -1,21 +1,15 @@
-import { Link, Route, Routes, useLocation } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
-import Loader from 'components/Loader/Loader';
+import { Link } from 'react-router-dom';
 
-const Cast = lazy(() => import('../Cast/Cast'));
-const Reviews = lazy(() => import('../Reviews/Reviews'));
-
-const MovieDetails = ({ data, isFetching }) => {
+const MovieDetails = ({ data, backLinkHref }) => {
   const { title, poster_path, vote_average, overview, genres } = data;
-  const location = useLocation();
-  const backLinkHref = location.state?.from ?? '/movies';
+  const votes = String(Math.round(vote_average * 10));
   return (
     <>
-      {isFetching && <Loader />}
       <Link to={backLinkHref}>Go back</Link>
-      {!!data && (
+      {Boolean(data) && (
         <div className="movie_item">
           <img
+            width={'100px'}
             src={
               poster_path && `https://image.tmdb.org/t/p/w500/${poster_path}`
             }
@@ -23,7 +17,7 @@ const MovieDetails = ({ data, isFetching }) => {
             className="movie_poster"
           />
           <h2 className="movie_title">{title}</h2>
-          <p className="movie_score">{String(Math.round(vote_average * 10))}</p>
+          <p className="movie_score">{votes}</p>
           <div className="movie_overview">
             <h3>Overview</h3>
             <p>{overview}</p>
@@ -46,12 +40,6 @@ const MovieDetails = ({ data, isFetching }) => {
           </Link>
         </li>
       </ul>
-      <Suspense fallback={<Loader />}>
-        <Routes>
-          <Route path="cast" element={<Cast />} />
-          <Route path="reviews" element={<Reviews />} />
-        </Routes>
-      </Suspense>
     </>
   );
 };
