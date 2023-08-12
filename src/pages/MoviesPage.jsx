@@ -1,10 +1,12 @@
 import { useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+
+import MovieList from 'components/MovieList/MovieList';
 
 import { getMoviesByQuery } from 'js/API_requests/getMoviesByQuery';
 import { searchParamKey } from 'js/consts';
 import { useData } from 'js/useData/useData';
-import { useEffect } from 'react';
-import MovieList from 'components/MovieList/MovieList';
+import ErrorPage from './ErrorPage';
 
 const MoviesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -19,18 +21,24 @@ const MoviesPage = () => {
 
   const onSearch = e => {
     e.preventDefault();
-    const searchValue = e.target[0].value;
+    const searchValue = e.currentTarget.elements.search.value.trim();
     if (!searchValue) return;
     setSearchParams({ [searchParamKey]: searchValue });
   };
 
+  if (error?.message) {
+    return <ErrorPage />;
+  }
+
   return (
     <>
-      <form onSubmit={onSearch}>
-        <input type="text" defaultValue={search || ''} />
-        <button type="submit">Search</button>
-      </form>
-      <MovieList movies={moviesList} isFetching={isFetching} />
+      <div className="container">
+        <form onSubmit={onSearch}>
+          <input name="search" type="text" defaultValue={search || ''} />
+          <button type="submit">Search</button>
+        </form>
+        <MovieList movies={moviesList} isFetching={isFetching} />
+      </div>
     </>
   );
 };
