@@ -7,14 +7,26 @@ import { motion } from 'framer-motion';
 import styled from './Reviews.module.css';
 import { childVariants, routeVariants } from 'js/AnimatedList/AnimatedList';
 import Loader from 'components/Loader/Loader';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectMovieExtraError,
+  selectMovieExtraIsFetching,
+  selectMovieExtraReviews,
+} from 'redux/slices/movieExtras/movieExtrasSlice';
+import { getMovieReviews } from 'redux/slices/movieExtras/movieExtrasOperations';
 const Reviews = () => {
   const { movieId } = useParams();
   const url = `https://api.themoviedb.org/3/movie/${movieId}/reviews`;
-  const { data, isFetching, error, getData } = useData();
+  // const { data, isFetching, error, getData } = useData();
+
+  const dispatcher = useDispatch();
+  const data = useSelector(selectMovieExtraReviews);
+  const isFetching = useSelector(selectMovieExtraIsFetching);
+  const error = useSelector(selectMovieExtraError);
 
   useEffect(() => {
-    getData(getMovieDetail(url));
-  }, [getData, url]);
+    dispatcher(getMovieReviews(url));
+  }, [dispatcher, url]);
   return (
     <>
       {isFetching && <Loader />}

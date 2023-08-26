@@ -12,7 +12,7 @@ export const getTrendMovies = async () => {
 
   const {
     data: { results },
-  } = await axios(URL, config);
+  } = await axios.get(URL, config);
 
   return results;
 };

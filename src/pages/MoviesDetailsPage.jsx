@@ -5,9 +5,14 @@ import { AnimatePresence } from 'framer-motion';
 import Loader from 'components/Loader/Loader';
 import MovieDetails from 'components/MovieDetails/MovieDetails';
 import ErrorPage from './ErrorPage';
+import { useDispatch, useSelector } from 'react-redux';
+import { getMovieData } from 'redux/slices/films/filmsOperations';
+import {
+  selectMoviesError,
+  selectMoviesIsFetching,
+  selectMoviesMovieDetails,
+} from 'redux/slices/films/filmsSlice';
 
-import { getSingleMovie } from 'js/API_requests/getSingleMovie';
-import { useData } from 'js/useData/useData';
 const Cast = lazy(() => import('components/Cast/Cast'));
 const Reviews = lazy(() => import('components/Reviews/Reviews'));
 
@@ -32,13 +37,18 @@ const MoviesDetailsPage = () => {
   const { movieId } = useParams();
   const location = useLocation();
 
-  const { data: moviesList, isFetching, error, getData } = useData();
+  // const { data: moviesList, isFetching, error, getData } = useData();
+  const dispatcher = useDispatch();
+  const movieData = useSelector(selectMoviesMovieDetails);
+  const isFetching = useSelector(selectMoviesIsFetching);
+  const error = useSelector(selectMoviesError);
+
   const backLinkHref = location.state?.from ?? '/movies';
 
   useEffect(() => {
     if (!movieId) return;
-    getData(getSingleMovie(movieId));
-  }, [getData, movieId]);
+    dispatcher(getMovieData(movieId));
+  }, [dispatcher, movieId]);
 
   if (error?.message) {
     return <ErrorPage />;
@@ -48,8 +58,8 @@ const MoviesDetailsPage = () => {
     <section>
       <div className="container">
         {isFetching && <Loader />}
-        {moviesList && (
-          <MovieDetails data={moviesList} backLinkHref={backLinkHref} />
+        {movieData && (
+          <MovieDetails data={movieData} backLinkHref={backLinkHref} />
         )}
         <LocationProvider>
           <RoutesWithAnimation />

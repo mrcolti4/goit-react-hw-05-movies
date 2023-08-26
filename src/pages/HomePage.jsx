@@ -1,21 +1,29 @@
 import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectMoviesData,
+  selectMoviesError,
+  selectMoviesIsFetching,
+} from 'redux/slices/films/filmsSlice';
+import { getTrendings } from 'redux/slices/films/filmsOperations';
 
 import MovieList from 'components/MovieList/MovieList';
 
-import { getTrendMovies } from 'js/API_requests/getTrendMovies';
-import { useData } from 'js/useData/useData';
-
 const HomePage = () => {
-  const { data, isFetching, getData } = useData();
+  // const { data, isFetching, getData } = useData();
+  const dispatcher = useDispatch();
+  const trendingFilms = useSelector(selectMoviesData);
+  const isFetching = useSelector(selectMoviesIsFetching);
+  const error = useSelector(selectMoviesError);
 
   useEffect(() => {
-    getData(getTrendMovies());
-  }, [getData]);
+    dispatcher(getTrendings());
+  }, [dispatcher]);
 
   return (
     <div className="container">
       <h2 className="home_header">Trend movies</h2>
-      <MovieList movies={data} isFetching={isFetching} />
+      <MovieList movies={trendingFilms} isFetching={isFetching} error={error} />
     </div>
   );
 };

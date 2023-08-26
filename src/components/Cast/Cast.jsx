@@ -9,18 +9,29 @@ import { useData } from 'js/useData/useData';
 
 import styled from './Cast.module.css';
 import { childVariants, routeVariants } from 'js/AnimatedList/AnimatedList';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectMovieExtraCast,
+  selectMovieExtraError,
+  selectMovieExtraIsFetching,
+} from 'redux/slices/movieExtras/movieExtrasSlice';
+import { getMovieCast } from 'redux/slices/movieExtras/movieExtrasOperations';
 
 const Cast = () => {
   const { movieId } = useParams();
   const url = `https://api.themoviedb.org/3/movie/${movieId}/credits`;
 
-  const { data, isFetching, error, getData } = useData();
+  // const { data, isFetching, error, getData } = useData();
+  const dispatcher = useDispatch();
+  const data = useSelector(selectMovieExtraCast);
+  const isFetching = useSelector(selectMovieExtraIsFetching);
+  const error = useSelector(selectMovieExtraError);
 
   const { cast } = data ?? {};
 
   useEffect(() => {
-    getData(getMovieDetail(url));
-  }, [getData, url]);
+    dispatcher(getMovieCast(url));
+  }, [dispatcher, url]);
 
   return (
     <>
